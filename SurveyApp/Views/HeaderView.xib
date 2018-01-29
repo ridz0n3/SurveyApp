@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="KFb-20-Y2n" customClass="BackBtnView" customModule="SurveyApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="backImg" translatesAutoresizingMaskIntoConstraints="NO" id="fGF-aX-QT7">
+                    <rect key="frame" x="7" y="7" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="V7s-xr-lhy"/>
+                        <constraint firstAttribute="height" constant="30" id="bpS-Xc-KKG"/>
+                    </constraints>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2v5-Af-rTQ">
+                    <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="fGF-aX-QT7" firstAttribute="centerY" secondItem="KFb-20-Y2n" secondAttribute="centerY" id="IYJ-pw-Vkg"/>
+                <constraint firstAttribute="trailing" secondItem="2v5-Af-rTQ" secondAttribute="trailing" id="Oc0-uX-FLu"/>
+                <constraint firstItem="fGF-aX-QT7" firstAttribute="centerX" secondItem="KFb-20-Y2n" secondAttribute="centerX" id="ROj-Wq-apL"/>
+                <constraint firstItem="2v5-Af-rTQ" firstAttribute="leading" secondItem="KFb-20-Y2n" secondAttribute="leading" id="SeB-Yk-4Qp"/>
+                <constraint firstAttribute="bottom" secondItem="2v5-Af-rTQ" secondAttribute="bottom" id="gNC-sF-upg"/>
+                <constraint firstItem="2v5-Af-rTQ" firstAttribute="top" secondItem="KFb-20-Y2n" secondAttribute="top" id="zKY-qS-BlE"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="tNk-bw-nus"/>
+            <connections>
+                <outlet property="backBtn" destination="2v5-Af-rTQ" id="amy-sd-yKg"/>
+            </connections>
+            <point key="canvasLocation" x="-132" y="142"/>
+        </view>
+        <view contentMode="scaleToFill" id="ZCR-Zz-XgQ" customClass="AddBtnView" customModule="SurveyApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="addImg" translatesAutoresizingMaskIntoConstraints="NO" id="IeC-rN-yfo">
+                    <rect key="frame" x="7" y="8.5" width="30" height="27"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="jmN-KG-Otk"/>
+                        <constraint firstAttribute="height" constant="27" id="um5-J5-wfk"/>
+                    </constraints>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OHN-vR-Ivm">
+                    <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="IeC-rN-yfo" firstAttribute="centerY" secondItem="ZCR-Zz-XgQ" secondAttribute="centerY" id="DC9-yS-3FQ"/>
+                <constraint firstAttribute="trailing" secondItem="OHN-vR-Ivm" secondAttribute="trailing" id="Krz-fh-aPZ"/>
+                <constraint firstItem="IeC-rN-yfo" firstAttribute="centerX" secondItem="ZCR-Zz-XgQ" secondAttribute="centerX" id="LHW-Ih-srm"/>
+                <constraint firstItem="OHN-vR-Ivm" firstAttribute="leading" secondItem="ZCR-Zz-XgQ" secondAttribute="leading" id="YWM-K5-mYj"/>
+                <constraint firstAttribute="bottom" secondItem="OHN-vR-Ivm" secondAttribute="bottom" id="p0e-kN-pfc"/>
+                <constraint firstItem="OHN-vR-Ivm" firstAttribute="top" secondItem="ZCR-Zz-XgQ" secondAttribute="top" id="svn-CD-a8E"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="9Vv-PQ-hkb"/>
+            <connections>
+                <outlet property="addBtn" destination="OHN-vR-Ivm" id="GfL-Q9-4SL"/>
+            </connections>
+            <point key="canvasLocation" x="-46" y="142"/>
+        </view>
+        <view contentMode="scaleToFill" id="8VI-fo-CHi" customClass="TitleSectionView" customModule="SurveyApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6L9-Aa-joO">
+                    <rect key="frame" x="16" y="0.0" width="343" height="40"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="6L9-Aa-joO" firstAttribute="top" secondItem="Yov-eS-YGl" secondAttribute="top" id="6Hx-lu-6tq"/>
+                <constraint firstItem="Yov-eS-YGl" firstAttribute="trailing" secondItem="6L9-Aa-joO" secondAttribute="trailing" constant="16" id="9Fu-nv-K0r"/>
+                <constraint firstItem="Yov-eS-YGl" firstAttribute="bottom" secondItem="6L9-Aa-joO" secondAttribute="bottom" id="OVl-Ut-n99"/>
+                <constraint firstItem="6L9-Aa-joO" firstAttribute="leading" secondItem="Yov-eS-YGl" secondAttribute="leading" constant="16" id="QS0-Ig-3zw"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="Yov-eS-YGl"/>
+            <connections>
+                <outlet property="titleLbl" destination="6L9-Aa-joO" id="QpU-kJ-zdc"/>
+            </connections>
+            <point key="canvasLocation" x="34" y="52"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="addImg" width="48" height="48"/>
+        <image name="backImg" width="48" height="48"/>
+    </resources>
+</document>
