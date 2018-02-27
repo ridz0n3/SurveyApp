@@ -12,6 +12,7 @@ import AVFoundation
 import AVKit
 import Gallery
 import Alamofire
+import SDWebImage
 
 class Survey04ViewController: BaseViewController, GalleryControllerDelegate, FusumaDelegate, UITableViewDataSource, UITableViewDelegate {
     
@@ -23,7 +24,10 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
     @IBOutlet weak var uploadView2: UIView!
     @IBOutlet weak var uploadBtn: UIView!
     
+    var isAddPhoto = Bool()
+    var firstView = Bool()
     var uploadedImgArr = [UIImage]()
+    var uploadedImgUrlArr = [URL]()
     var doneRefresh = Bool()
     var changeIndex = Int()
     var gallery: GalleryController!
@@ -39,15 +43,6 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
         addShadow(nextBtn)
         addShadow(uploadBtn)
         
-        if status == "edit"{
-            let survey = User.current.survey[surveyIndex]
-            
-            for img in survey.photo{
-                uploadedImgArr.append(UIImage(data: img.imgData)!)
-            }
-            
-        }
-        
         if uploadedImgArr.count == 0{
             UIView.animate(withDuration: 0.5, animations: {
                 self.allUploadView.alpha = 1
@@ -60,6 +55,89 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
                 self.photoTableView.alpha = 1
                 self.uploadView2.alpha = 1
             })
+        }
+        
+        if status == "edit"{
+            
+            if survey.status == "server"{
+                
+                if isConnectedToNetwork(){
+                    Hud.show(view)
+                    Api.getPhoto(survey.id).continueOnSuccessWith(block: { (task) -> Any? in
+                        Hud.hide()
+                        if task.succeed{
+                            for img in self.survey.photo{
+                                self.uploadedImgUrlArr.append(URL(string: img.imgUrl)!)
+                            }
+                            self.photoTableView.reloadData()
+                            
+                            if self.uploadedImgUrlArr.count == 0{
+                                UIView.animate(withDuration: 0.5, animations: {
+                                    self.allUploadView.alpha = 1
+                                    self.photoTableView.alpha = 0
+                                    self.uploadView2.alpha = 0
+                                })
+                            }else{
+                                
+                                UIView.animate(withDuration:0.5, animations: {
+                                    self.allUploadView.alpha = 0
+                                    self.photoTableView.alpha = 1
+                                    self.uploadView2.alpha = 1
+                                })
+                            }
+                        }else{
+                            task.showError()
+                        }
+                        
+                        return nil
+                    })
+                }
+
+            }else{
+                
+                var isEmpty = Bool()
+                for img in survey.photo{
+                    
+                    if img.imgData.count == 0{
+                        uploadedImgUrlArr.append(URL(string: img.imgUrl)!)
+                        isEmpty = true
+                    }else{
+                        uploadedImgArr.append(UIImage(data: img.imgData)!)
+                    }
+                    
+                }
+                
+                if isEmpty{
+                    if uploadedImgUrlArr.count == 0{
+                        UIView.animate(withDuration: 0.5, animations: {
+                            self.allUploadView.alpha = 1
+                            self.photoTableView.alpha = 0
+                            self.uploadView2.alpha = 0
+                        })
+                    }else{
+                        UIView.animate(withDuration:0.5, animations: {
+                            self.allUploadView.alpha = 0
+                            self.photoTableView.alpha = 1
+                            self.uploadView2.alpha = 1
+                        })
+                    }
+                }else{
+                    if uploadedImgArr.count == 0{
+                        UIView.animate(withDuration: 0.5, animations: {
+                            self.allUploadView.alpha = 1
+                            self.photoTableView.alpha = 0
+                            self.uploadView2.alpha = 0
+                        })
+                    }else{
+                        UIView.animate(withDuration:0.5, animations: {
+                            self.allUploadView.alpha = 0
+                            self.photoTableView.alpha = 1
+                            self.uploadView2.alpha = 1
+                        })
+                    }
+                }
+            }
+            
         }
         
         registerNibs()
@@ -90,7 +168,13 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return uploadedImgArr.count
+        
+        if status == "edit"{
+            if survey.status == "server" && !firstView && !isAddPhoto{
+                return uploadedImgUrlArr.count
+            }
+        }
+        return uploadedImgArr.count == 0 ? uploadedImgUrlArr.count : uploadedImgArr.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -99,7 +183,53 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = photoTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! PhotoTableViewCell
-        cell.uploadedImgView.image = uploadedImgArr[indexPath.row]
+        if status == "edit"{
+            
+            if survey.status == "server" && !firstView && !isAddPhoto {
+                let urlString = uploadedImgUrlArr[indexPath.row]
+                cell.uploadedImgView.sd_setIndicatorStyle(.gray)
+                cell.uploadedImgView.sd_setShowActivityIndicatorView(true)
+                cell.uploadedImgView.sd_setImage(with: urlString) { (loadedImage, error, cacheType, url) in
+                    cell.uploadedImgView.sd_removeActivityIndicator()
+                    if error != nil {
+                        print("Error code: \(error!.localizedDescription)")
+                    } else {
+                        cell.uploadedImgView.image = loadedImage
+                        self.uploadedImgArr.append(loadedImage!)
+                        
+                        if self.uploadedImgUrlArr.count == self.uploadedImgArr.count{
+                            self.firstView = true
+                        }
+                    }
+                }
+            }else{
+                
+                if uploadedImgArr.count == 0{
+                    let urlString = uploadedImgUrlArr[indexPath.row]
+                    cell.uploadedImgView.sd_setIndicatorStyle(.gray)
+                    cell.uploadedImgView.sd_setShowActivityIndicatorView(true)
+                    cell.uploadedImgView.sd_setImage(with: urlString) { (loadedImage, error, cacheType, url) in
+                        cell.uploadedImgView.sd_removeActivityIndicator()
+                        if error != nil {
+                            print("Error code: \(error!.localizedDescription)")
+                        } else {
+                            cell.uploadedImgView.image = loadedImage
+                            self.uploadedImgArr.append(loadedImage!)
+                            
+                            if self.uploadedImgUrlArr.count == self.uploadedImgArr.count{
+                                self.firstView = true
+                            }
+                        }
+                    }
+                }else{
+                    cell.uploadedImgView.image = uploadedImgArr[indexPath.row]
+                }
+                
+            }
+        }else{
+            cell.uploadedImgView.image = uploadedImgArr[indexPath.row]
+        }
+        
         cell.changeBtn.tag = indexPath.row
         cell.removeBtn.tag = indexPath.row
         
@@ -115,21 +245,7 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
         photoTableView.reloadData()
     }
     
-    func fusumaMultipleImageSelected(_ images: [UIImage], source: FusumaMode) {
-        
-        for image in images {
-            uploadedImgArr.append(image)
-        }
-        
-        UIView.animate(withDuration: 0.5, animations: {
-            self.allUploadView.alpha = 0
-            self.photoTableView.alpha = 1
-            self.uploadView2.alpha = 1
-        })
-        
-        photoTableView.reloadData()
-        
-    }
+    func fusumaMultipleImageSelected(_ images: [UIImage], source: FusumaMode) {}
     
     func fusumaVideoCompleted(withFileURL fileURL: URL) {}
     
@@ -145,6 +261,8 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
             for image in resolvedImages {
                 self?.uploadedImgArr.append(image!)
             }
+            
+            self?.isAddPhoto = true
             
             UIView.animate(withDuration: 0.5, animations: {
                 self?.allUploadView.alpha = 0
@@ -173,24 +291,84 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
         
         if !doneRefresh{
             
-            if uploadedImgArr.count > 0{
+            if status == "edit"{
                 
-                doneRefresh = true
-                deadlineTime = deadlineTime + .seconds(1)
-                self.photoTableView.beginUpdates()
-                uploadedImgArr.remove(at: tag)
-                let indexPath = IndexPath(row: tag, section: 0)
-                self.photoTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
-                self.photoTableView.endUpdates()
-                
-                if uploadedImgArr.count == 0{
+                if survey.status == "server" && !firstView {
+                    if uploadedImgUrlArr.count > 0{
+                        
+                        doneRefresh = true
+                        deadlineTime = deadlineTime + .seconds(1)
+                        self.photoTableView.beginUpdates()
+                        uploadedImgArr.remove(at: tag)
+                        uploadedImgUrlArr.remove(at: tag)
+                        let indexPath = IndexPath(row: tag, section: 0)
+                        self.photoTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+                        self.photoTableView.endUpdates()
+                        
+                        if uploadedImgUrlArr.count == 0{
+                            
+                            UIView.animate(withDuration: 0.5, animations: {
+                                self.allUploadView.alpha = 1
+                                self.photoTableView.alpha = 0
+                                self.uploadView2.alpha = 0
+                            })
+                            
+                        }
+                    }else{
+                        if uploadedImgUrlArr.count == 0{
+                            
+                            UIView.animate(withDuration: 0.5, animations: {
+                                self.allUploadView.alpha = 1
+                                self.photoTableView.alpha = 0
+                                self.uploadView2.alpha = 0
+                            })
+                            
+                        }
+                    }
+                }else{
+                    if uploadedImgArr.count > 0{
+                        
+                        doneRefresh = true
+                        deadlineTime = deadlineTime + .seconds(1)
+                        self.photoTableView.beginUpdates()
+                        uploadedImgArr.remove(at: tag)
+                        uploadedImgUrlArr.remove(at: tag)
+                        let indexPath = IndexPath(row: tag, section: 0)
+                        self.photoTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+                        self.photoTableView.endUpdates()
+                        
+                        if uploadedImgArr.count == 0{
+                            
+                            UIView.animate(withDuration: 0.5, animations: {
+                                self.allUploadView.alpha = 1
+                                self.photoTableView.alpha = 0
+                                self.uploadView2.alpha = 0
+                            })
+                            
+                        }
+                    }
+                }
+            }else{
+                if uploadedImgArr.count > 0{
                     
-                    UIView.animate(withDuration: 0.5, animations: {
-                        self.allUploadView.alpha = 1
-                        self.photoTableView.alpha = 0
-                        self.uploadView2.alpha = 0
-                    })
+                    doneRefresh = true
+                    deadlineTime = deadlineTime + .seconds(1)
+                    self.photoTableView.beginUpdates()
+                    uploadedImgArr.remove(at: tag)
+                    uploadedImgUrlArr.remove(at: tag)
+                    let indexPath = IndexPath(row: tag, section: 0)
+                    self.photoTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+                    self.photoTableView.endUpdates()
                     
+                    if uploadedImgArr.count == 0{
+                        
+                        UIView.animate(withDuration: 0.5, animations: {
+                            self.allUploadView.alpha = 1
+                            self.photoTableView.alpha = 0
+                            self.uploadView2.alpha = 0
+                        })
+                        
+                    }
                 }
             }
             
@@ -234,7 +412,7 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
     
     @IBAction func nextBtnPressed(_ sender: Any) {
         
-        if uploadedImgArr.count != 0{
+        if status == "edit"{
             
             try! realm.write {
                 
@@ -242,90 +420,56 @@ class Survey04ViewController: BaseViewController, GalleryControllerDelegate, Fus
                 
                 for img in uploadedImgArr{
                     let photo = Photo()
-                    let imageData:Data = UIImagePNGRepresentation(img)!
+                    let tempImg = self.resizeImage(image: img, newWidth: 200)
+                    let imageData:Data = UIImagePNGRepresentation( tempImg)!
                     photo.imgData = imageData
+                    
                     User.current.photo.append(photo)
                 }
+                
+                User.current.updateImg = true
                 
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let survey05VC = storyboard.instantiateViewController(withIdentifier: "Survey05VC") as! Survey05ViewController
                 survey05VC.status = status
-                
-                if status == "edit"{
-                    survey05VC.surveyIndex = surveyIndex
-                }
+                survey05VC.survey = survey
+                survey05VC.surveyIndex = surveyIndex
                 
                 self.navigationController?.heroNavigationAnimationType = .fade
                 self.navigationController?.pushViewController(survey05VC, animated: true)
             }
             
-            /*
-            
-            
-            var request = try! URLRequest(url: URL(string: "\(settings.api.baseUrl)v1/surveys/photos")!, method: .post)
-            request.setValue("FrsApi \(defaults.string(forKey: "token")!)", forHTTPHeaderField: "Authorization")
-            
-            Hud.show(self.view)
-            
-            Alamofire.upload(multipartFormData: { multipartFormData in
-                // code
-                var i = 0
-                for img in self.uploadedImgArr{
-                    let tempImg = self.resizeImage(image: img, newWidth: 200)
-                    let imageData:Data = UIImagePNGRepresentation(tempImg)!
-                    multipartFormData.append(imageData, withName: "photos[\(i)]", fileName: "1.png", mimeType: "image/png")
-                    i += 1
-                }
-                multipartFormData.append("\(User.current.icnumber)".data(using: String.Encoding.utf8, allowLossyConversion: false)!, withName: "icnumber")
-            }, with: request, encodingCompletion: { (result) in
-                // code
-                switch result {
-                case .success(let upload, _ , _):
-                    
-                    upload.uploadProgress(closure: { (progress) in
-                    })
-                    
-                    upload.responseJSON(completionHandler: { (response) in
-                        Hud.hide()
-                        
-                        guard let data = response.result.value as? [String: AnyObject] else{
-                            showErrorMessage("Internal server error")
-                            return
-                        }
-                        
-                        if data["code"] as! Int == 201{
-                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                            let survey05VC = storyboard.instantiateViewController(withIdentifier: "Survey05VC") as! Survey05ViewController
-                            survey05VC.status = self.status
-                            
-                            if self.status == "edit"{
-                                survey05VC.surveyIndex = self.surveyIndex
-                            }
-                            
-                            self.navigationController?.heroNavigationAnimationType = .fade
-                            self.navigationController?.pushViewController(survey05VC, animated: true)
-                        }else{
-                            showErrorMessage(data["message"] as! String)
-                        }
-                    })
-                    
-                case .failure(let _):
-                    print("failed")
-                    showErrorMessage("Internal server error")
-                    
-                }
-            })*/
         }else{
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let survey05VC = storyboard.instantiateViewController(withIdentifier: "Survey05VC") as! Survey05ViewController
-            survey05VC.status = status
             
-            if status == "edit"{
-                survey05VC.surveyIndex = surveyIndex
+            if uploadedImgArr.count != 0{
+                try! realm.write {
+                    
+                    realm.delete(User.current.photo)
+                    
+                    for img in uploadedImgArr{
+                        let photo = Photo()
+                        let tempImg = self.resizeImage(image: img, newWidth: 200)
+                        let imageData:Data = UIImagePNGRepresentation( tempImg)!
+                        photo.imgData = imageData
+                        
+                        User.current.photo.append(photo)
+                    }
+                    
+                    User.current.updateImg = true
+                    
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let survey05VC = storyboard.instantiateViewController(withIdentifier: "Survey05VC") as! Survey05ViewController
+                    survey05VC.status = status
+                    self.navigationController?.heroNavigationAnimationType = .fade
+                    self.navigationController?.pushViewController(survey05VC, animated: true)
+                }
+            }else{
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let survey05VC = storyboard.instantiateViewController(withIdentifier: "Survey05VC") as! Survey05ViewController
+                survey05VC.status = status
+                self.navigationController?.heroNavigationAnimationType = .fade
+                self.navigationController?.pushViewController(survey05VC, animated: true)
             }
-            
-            self.navigationController?.heroNavigationAnimationType = .fade
-            self.navigationController?.pushViewController(survey05VC, animated: true)
         }
     }
 }

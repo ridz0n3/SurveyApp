@@ -43,11 +43,53 @@ class Survey05ViewController: BaseViewController, GalleryControllerDelegate, UIT
         addShadow(uploadBtn)
         
         if status == "edit"{
-            let survey = User.current.survey[surveyIndex]
             
-            for img in survey.video{
-                uploadedImgArr.append(UIImage(data: img.thumbnail)!)
-                uploadedUrlArr.append(URL(string: img.url)!)
+            if survey.status == "server"{
+                
+                if isConnectedToNetwork(){
+                    Hud.show(view)
+                    Api.getVideo(survey.id).continueOnSuccessWith(block: { (task) -> Any? in
+                        Hud.hide()
+                        if task.succeed{
+                            
+                            for video in self.survey.video{
+                                self.uploadedUrlArr.append(URL(string: video.url)!)
+                                
+                                if let thumbnailImage = self.getThumbnailImage(forUrl: URL(string: video.url)!) {
+                                    self.uploadedImgArr.append(thumbnailImage)
+                                }
+                                
+                            }
+                            
+                            self.photoTableView.reloadData()
+                            
+                            if self.uploadedImgArr.count == 0{
+                                UIView.animate(withDuration: 0.5, animations: {
+                                    self.allUploadView.alpha = 1
+                                    self.photoTableView.alpha = 0
+                                    self.uploadView2.alpha = 0
+                                })
+                            }else{
+                                UIView.animate(withDuration:0.5, animations: {
+                                    self.allUploadView.alpha = 0
+                                    self.photoTableView.alpha = 1
+                                    self.uploadView2.alpha = 1
+                                })
+                            }
+                        }else{
+                            task.showError()
+                        }
+                        
+                        return nil
+                    })
+                }
+            }else{
+                
+                for img in survey.video{
+                    uploadedImgArr.append(UIImage(data: img.thumbnail)!)
+                    uploadedUrlArr.append(URL(string: img.url)!)
+                }
+                
             }
             
         }
@@ -191,6 +233,20 @@ class Survey05ViewController: BaseViewController, GalleryControllerDelegate, UIT
         isChange = false
     }
     
+    func getThumbnailImage(forUrl url: URL) -> UIImage? {
+        let asset: AVAsset = AVAsset(url: url)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        
+        do {
+            let thumbnailImage = try imageGenerator.copyCGImage(at: CMTimeMake(1, 60) , actualTime: nil)
+            return UIImage(cgImage: thumbnailImage)
+        } catch let error {
+            print(error)
+        }
+        
+        return nil
+    }
+    
     @objc func removeImage(_ sender: UIButton){
         let tag = sender.tag
         var deadlineTime = DispatchTime.now()
@@ -272,7 +328,8 @@ class Survey05ViewController: BaseViewController, GalleryControllerDelegate, UIT
     
     @IBAction func nextBtnPressed(_ sender: Any) {
         
-        if uploadedImgArr.count != 0{
+        
+        if status == "edit"{
             
             try! realm.write {
                 
@@ -290,82 +347,57 @@ class Survey05ViewController: BaseViewController, GalleryControllerDelegate, UIT
                     i += 1
                 }
                 
+                User.current.updateVideo = true
+                
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let survey06VC = storyboard.instantiateViewController(withIdentifier: "Survey06VC") as! Survey06ViewController
                 survey06VC.status = status
-                
-                if status == "edit"{
-                    survey06VC.surveyIndex = surveyIndex
-                }
+                survey06VC.survey = survey
+                survey06VC.surveyIndex = surveyIndex
                 
                 self.navigationController?.heroNavigationAnimationType = .fade
                 self.navigationController?.pushViewController(survey06VC, animated: true)
                 
             }
-            /*
-            var request = try! URLRequest(url: URL(string: "\(settings.api.baseUrl)v1/surveys/videos")!, method: .post)
-            request.setValue("FrsApi \(defaults.string(forKey: "token")!)", forHTTPHeaderField: "Authorization")
             
-            Hud.show(self.view)
+        }else{
             
-            Alamofire.upload(multipartFormData: { multipartFormData in
-                // code
-                var i = 0
-                for url in self.uploadedUrlArr{
-                    multipartFormData.append(url, withName: "videos[\(i)]", fileName: "vdeo.mp4", mimeType: "video/mp4")
-                    i += 1
+            if uploadedImgArr.count != 0{
+                
+                try! realm.write {
+                    
+                    realm.delete(User.current.video)
+                    
+                    var i = 0
+                    for thumbnail in uploadedImgArr{
+                        
+                        let video = VideoSurvey()
+                        let imageData:Data = UIImagePNGRepresentation(thumbnail)!
+                        video.thumbnail = imageData
+                        video.url = "\(uploadedUrlArr[i])"
+                        User.current.video.append(video)
+                        
+                        i += 1
+                    }
+                    
+                    User.current.updateVideo = true
+                    
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let survey06VC = storyboard.instantiateViewController(withIdentifier: "Survey06VC") as! Survey06ViewController
+                    survey06VC.status = status
+                    self.navigationController?.heroNavigationAnimationType = .fade
+                    self.navigationController?.pushViewController(survey06VC, animated: true)
+                    
                 }
                 
-                multipartFormData.append("\(User.current.icnumber)".data(using: String.Encoding.utf8, allowLossyConversion: false)!, withName: "icnumber")
-            }, with: request, encodingCompletion: { (result) in
-                // code
-                switch result {
-                case .success(let upload, _ , _):
-                    
-                    upload.uploadProgress(closure: { (progress) in
-                    })
-                    
-                    upload.responseJSON(completionHandler: { (response) in
-                        Hud.hide()
-                        
-                        guard let data = response.result.value as? [String: AnyObject] else{
-                            showErrorMessage("Internal server error")
-                            return
-                        }
-                        
-                        if data["code"] as! Int == 201{
-                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                            let survey06VC = storyboard.instantiateViewController(withIdentifier: "Survey06VC") as! Survey06ViewController
-                            survey06VC.status = self.status
-                            
-                            if self.status == "edit"{
-                                survey06VC.surveyIndex = self.surveyIndex
-                            }
-                            
-                            self.navigationController?.heroNavigationAnimationType = .fade
-                            self.navigationController?.pushViewController(survey06VC, animated: true)
-                        }else{
-                            showErrorMessage(data["message"] as! String)
-                        }
-                    })
-                    
-                case .failure(let _):
-                    print("failed")
-                    showErrorMessage("Internal server error")
-                    
-                }
-            })*/
-        }else{
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let survey06VC = storyboard.instantiateViewController(withIdentifier: "Survey06VC") as! Survey06ViewController
-            survey06VC.status = status
-            
-            if status == "edit"{
-                survey06VC.surveyIndex = surveyIndex
+            }else{
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let survey06VC = storyboard.instantiateViewController(withIdentifier: "Survey06VC") as! Survey06ViewController
+                survey06VC.status = status
+                self.navigationController?.heroNavigationAnimationType = .fade
+                self.navigationController?.pushViewController(survey06VC, animated: true)
             }
-            
-            self.navigationController?.heroNavigationAnimationType = .fade
-            self.navigationController?.pushViewController(survey06VC, animated: true)
         }
+        
     }
 }

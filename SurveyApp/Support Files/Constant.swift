@@ -43,13 +43,23 @@ func showErrorMessage(_ message: String) {
     errorView.showError("Error!", subTitle:message, closeButtonTitle:"Close", colorStyle:0xFF0000)
 }
 
+func showToastMessage(_ message: String) {
+    let successView = SCLAlertView()
+    successView.showSuccess("Success", subTitle: message)
+}
+
 func setUrlRequest(_ url: String) -> URLRequest{
     
     var request = URLRequest(url: URL(string: "\(settings.api.baseUrl)\(url)")!)
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.setValue("FrsApi \(defaults.string(forKey: "token")!)", forHTTPHeaderField: "Authorization")
     
+    if url != "v1/authenticate"{
+        request.setValue("\(defaults.string(forKey: "tokenLog")!)", forHTTPHeaderField: "User-Token")
+    }
+    
     return request
+    
 }
 
 func nilIfEmpty(_ data: AnyObject) -> String{
@@ -63,6 +73,16 @@ func setToken(){
         }
         return nil
     }
+}
+
+func dateFormater() -> DateFormatter{
+    
+    let formater = DateFormatter()
+    //formater.locale = Locale(identifier: "en_GB")
+    //formater.timeZone = NSTimeZone.local
+    formater.dateFormat = "dd-MMM-yyyy hh:mm:ss"
+    
+    return formater
 }
 
 //Check internet connection

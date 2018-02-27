@@ -16,6 +16,7 @@
 		9231C3C2200A35730079A7D6 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9231C3C1200A35730079A7D6 /* Setting.swift */; };
 		9231C3C4200A437F0079A7D6 /* TitleSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9231C3C3200A437F0079A7D6 /* TitleSectionView.swift */; };
 		9231C3C6200A460C0079A7D6 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9231C3C5200A460C0079A7D6 /* Constant.swift */; };
+		92AC74FC202C7113003848D0 /* ChecklistChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AC74FB202C7113003848D0 /* ChecklistChild.swift */; };
 		92BB0E7C200B739000031C2C /* Hud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BB0E7B200B739000031C2C /* Hud.swift */; };
 		92BB0E7F200B7C7E00031C2C /* CustomProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BB0E7E200B7C7E00031C2C /* CustomProfileTableViewCell.swift */; };
 		92BB0E81200B875000031C2C /* Survey06ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BB0E80200B875000031C2C /* Survey06ViewController.swift */; };
@@ -60,6 +61,7 @@
 		9231C3C1200A35730079A7D6 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		9231C3C3200A437F0079A7D6 /* TitleSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleSectionView.swift; sourceTree = "<group>"; };
 		9231C3C5200A460C0079A7D6 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		92AC74FB202C7113003848D0 /* ChecklistChild.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistChild.swift; sourceTree = "<group>"; };
 		92BB0E7B200B739000031C2C /* Hud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hud.swift; sourceTree = "<group>"; };
 		92BB0E7E200B7C7E00031C2C /* CustomProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProfileTableViewCell.swift; sourceTree = "<group>"; };
 		92BB0E80200B875000031C2C /* Survey06ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Survey06ViewController.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				922BACB52010909500D02C1E /* Categories.swift */,
 				922B598C20197AC2007B5C8E /* Parlimen.swift */,
 				92FB3088201A12D3006200B7 /* Checklist.swift */,
+				92AC74FB202C7113003848D0 /* ChecklistChild.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-SurveyApp/Pods-SurveyApp-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts-Swift/BoltsSwift.framework",
@@ -390,11 +394,13 @@
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SCLAlertView/SCLAlertView.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SkyFloatingLabelTextField/SkyFloatingLabelTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ActionSheetPicker_3_0.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BoltsSwift.framework",
@@ -408,6 +414,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SCLAlertView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkyFloatingLabelTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
 			);
@@ -465,6 +472,7 @@
 				92C870B81FFF231C00135105 /* Survey04ViewController.swift in Sources */,
 				92BB0E7C200B739000031C2C /* Hud.swift in Sources */,
 				92BB0E81200B875000031C2C /* Survey06ViewController.swift in Sources */,
+				92AC74FC202C7113003848D0 /* ChecklistChild.swift in Sources */,
 				9231C3C4200A437F0079A7D6 /* TitleSectionView.swift in Sources */,
 				92FB3089201A12D3006200B7 /* Checklist.swift in Sources */,
 				92BD43C62008E1C600549BE1 /* Survey05ViewController.swift in Sources */,
@@ -642,6 +650,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = SurveyAppDev;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -659,12 +668,14 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/SurveyApp/Support Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = DHSB.Frs.Mobile.Ios.SurveyApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ff6c43e0-d98b-44d4-935b-14a52fff00b8";
+				PROVISIONING_PROFILE = "e02c296a-693a-4f5a-9b74-7886254ea8bb";
 				PROVISIONING_PROFILE_SPECIFIER = SurveyAppDist;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Release;
 		};

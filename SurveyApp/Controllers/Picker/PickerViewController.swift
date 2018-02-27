@@ -84,5 +84,9 @@ class PickerViewController: BaseViewController, UITableViewDelegate, UITableView
         self.dismiss(animated: true, completion: nil)
         
     }
-
+    
+    @IBAction func closeBtnPressed(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
 }

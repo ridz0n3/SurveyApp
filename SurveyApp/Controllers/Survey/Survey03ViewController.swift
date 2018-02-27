@@ -25,7 +25,7 @@ class Survey03ViewController: BaseViewController {
         addShadow(wishlistView)
         
         if status == "edit"{
-            wishlistTextview.text = User.current.survey[surveyIndex].wishlist
+            wishlistTextview.text = survey.wishlist
         }
     }
     
@@ -53,6 +53,7 @@ class Survey03ViewController: BaseViewController {
         
         if status == "edit"{
             survey04VC.surveyIndex = surveyIndex
+            survey04VC.survey = survey
         }
         
         self.navigationController?.heroNavigationAnimationType = .fade

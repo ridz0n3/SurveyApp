@@ -36,23 +36,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navigationBarAppearace.barTintColor = hexStringToUIColor(hex: "#191919")
         navigationBarAppearace.isTranslucent = false
        
-        Api.getToken().continueWith { (task) -> Any? in
-            if task.succeed {
-                
-                if User.current.isLogin{
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let TabSetupVC = storyboard.instantiateViewController(withIdentifier: "HomeVC") as! HomeViewController
-                    self.window!.rootViewController = TabSetupVC
-                }else{
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let TabSetupVC = storyboard.instantiateViewController(withIdentifier: "LoginNav")
-                    self.window!.rootViewController = TabSetupVC
+        if isConnectedToNetwork(){
+            Api.getToken().continueWith { (task) -> Any? in
+                if task.succeed {
+                    
+                    if User.current.isLogin{
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let TabSetupVC = storyboard.instantiateViewController(withIdentifier: "HomeVC") as! HomeViewController
+                        self.window!.rootViewController = TabSetupVC
+                    }else{
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let TabSetupVC = storyboard.instantiateViewController(withIdentifier: "LoginNav")
+                        self.window!.rootViewController = TabSetupVC
+                    }
+                    
+                }else {
+                    task.showError()
                 }
-                
-            }else {
-                task.showError()
+                return nil
             }
-            return nil
+        }else{
+            if User.current.isLogin{
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let TabSetupVC = storyboard.instantiateViewController(withIdentifier: "HomeVC") as! HomeViewController
+                self.window!.rootViewController = TabSetupVC
+            }else{
+                showErrorMessage("You have no internet connection.")
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let TabSetupVC = storyboard.instantiateViewController(withIdentifier: "LoginNav")
+                self.window!.rootViewController = TabSetupVC
+            }
         }
         
         return true

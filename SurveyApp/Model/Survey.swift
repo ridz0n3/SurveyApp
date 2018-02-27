@@ -13,12 +13,16 @@ class Survey: Object {
 
     @objc dynamic var id = ""
     @objc dynamic var status = ""
+    @objc dynamic var processStatus = Bool()
     @objc dynamic var parlimenTitle = ""
     @objc dynamic var parlimenId = ""
     @objc dynamic var categoryTitle = ""
     @objc dynamic var categoryId = ""
     @objc dynamic var issue = ""
     @objc dynamic var wishlist = ""
+    @objc dynamic var updateImg = Bool()
+    @objc dynamic var updateVideo = Bool()
+    @objc dynamic var createdString = ""
     var photo = List<Photo>()
     var video = List<VideoSurvey>()
     

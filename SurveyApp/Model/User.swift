@@ -18,6 +18,7 @@ class User: Object {
     @objc dynamic var email = ""
     @objc dynamic var phoneno = ""
     @objc dynamic var rolename = ""
+    @objc dynamic var checkListId = ""
     let parlimen = List<Parlimen>()
     let checklist = List<Checklist>()
     
@@ -29,6 +30,8 @@ class User: Object {
     @objc dynamic var categoryId = ""
     @objc dynamic var issue = ""
     @objc dynamic var wishlist = ""
+    @objc dynamic var updateImg = Bool()
+    @objc dynamic var updateVideo = Bool()
     let photo = List<Photo>()
     let video = List<VideoSurvey>()
     

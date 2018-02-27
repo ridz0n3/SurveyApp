@@ -20,4 +20,6 @@ target 'SurveyApp' do
     pod 'Gallery', '~> 2.0.6'
     pod 'CRToast'
     pod 'SCLAlertView'
+    pod 'SDWebImage', '~> 4.1'
+    pod 'ActionSheetPicker-3.0'
 end

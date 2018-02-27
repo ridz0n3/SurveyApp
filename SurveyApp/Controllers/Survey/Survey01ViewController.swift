@@ -10,6 +10,7 @@ import UIKit
 
 class Survey01ViewController: BaseViewController {
 
+    @IBOutlet weak var parlimenStack: UIStackView!
     @IBOutlet weak var parlimenView: UIView!
     @IBOutlet weak var parlimenLbl: UILabel!
     
@@ -21,18 +22,21 @@ class Survey01ViewController: BaseViewController {
     var categoryId = String()
     var parlimentId = String()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationBarSetup("second", title: "Survey Category")
         processNumber(1)
         addShadow(nextBtn)
-        getCategories()
-        parlimenView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChooseBtnClicked(_:))))
-        categoryView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChooseBtnClicked(_:))))
+        
+        if User.current.rolename == "PDMLeader"{
+            parlimenLbl.text = User.current.parlimen[0].parlimen.capitalized
+            parlimentId = User.current.parlimen[0].parlimenCode
+            parlimenStack.isHidden = true
+        }else{
+           parlimenView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChooseBtnClicked(_:))))
+        }
         
         if status == "edit"{
-            let survey = User.current.survey[surveyIndex]
             
             parlimenLbl.text = survey.parlimenTitle.capitalized
             categoryLbl.text = survey.categoryTitle
@@ -40,6 +44,8 @@ class Survey01ViewController: BaseViewController {
             parlimentId = survey.parlimenId
             categoryId = survey.categoryId
         }
+        
+        categoryView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChooseBtnClicked(_:))))
         
         NotificationCenter.default.addObserver(self, selector:#selector(reloadData(_:)), name:NSNotification.Name(rawValue: "reload"), object:nil)
     }
@@ -52,15 +58,6 @@ class Survey01ViewController: BaseViewController {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
         self.tabBarController?.tabBar.layer.zPosition = -1
-    }
-    
-    @objc func getCategories(){
-        Hud.show(view)
-        Api.getCategory().continueOnSuccessWith { (task) -> Any? in
-            Hud.hide()
-            if task.succeed{}
-            return nil
-        }
     }
     
     @objc func reloadData(_ sender: Notification){
@@ -124,6 +121,7 @@ class Survey01ViewController: BaseViewController {
             
             if status == "edit"{
                 survey02VC.surveyIndex = surveyIndex
+                survey02VC.survey = survey
             }
             
             self.navigationController?.heroNavigationAnimationType = .fade

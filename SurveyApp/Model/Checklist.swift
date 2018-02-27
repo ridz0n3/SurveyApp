@@ -11,10 +11,11 @@ import RealmSwift
 
 class Checklist: Object {
 
-    @objc dynamic var checklistid = 0
+    @objc dynamic var checklistid = ""
+    @objc dynamic var itemid = ""
     @objc dynamic var checklist_text = ""
-    @objc dynamic var progressStatus = ""
-    @objc dynamic var comment = ""
+    @objc dynamic var isEditing = Bool()
+    var child = List<ChecklistChild>()
     
     override static func primaryKey() -> String? {
         return "checklistid"

@@ -25,7 +25,7 @@ class Survey02ViewController: BaseViewController {
         addShadow(clearBtn)
         
         if status == "edit"{
-            issueTextView.text = User.current.survey[surveyIndex].issue
+            issueTextView.text = survey.issue
         }
     }
 
@@ -57,6 +57,7 @@ class Survey02ViewController: BaseViewController {
             
             if status == "edit"{
                 survey03VC.surveyIndex = surveyIndex
+                survey03VC.survey = survey
             }
             
             self.navigationController?.heroNavigationAnimationType = .fade

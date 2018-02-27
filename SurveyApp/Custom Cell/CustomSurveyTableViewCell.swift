@@ -16,5 +16,6 @@ class CustomSurveyTableViewCell: UITableViewCell {
     @IBOutlet weak var dateUpdatedLbl: UILabel!
     @IBOutlet weak var destinationLbl: UILabel!
     @IBOutlet weak var statusLbl: UILabel!
-
+    @IBOutlet weak var deleteBtn: UIButton!
+    
 }

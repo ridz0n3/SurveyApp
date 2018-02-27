@@ -22,33 +22,47 @@ class LoginViewController: BaseViewController {
         super.didReceiveMemoryWarning()
     }
     
+    @objc func getUserInfo(){
+        Api.getUserInfo(self.emailTxtField.text!).continueWith(block: { (task2) -> Any? in
+            if task2.succeed{
+                self.getCategories()
+            }else{
+                Hud.hide()
+                task2.showError()
+            }
+            return nil
+        })
+    }
+    
+    @objc func getCategories(){
+        Api.getCategory().continueWith(block: { (task) -> Any? in
+            Hud.hide()
+            if task.succeed{
+                let viewController = UIApplication.shared.delegate as! AppDelegate
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let FirstNavigationVC = storyboard.instantiateViewController(withIdentifier: "HomeVC") as! HomeViewController
+                viewController.window!.rootViewController = FirstNavigationVC
+            }else{
+                task.showError()
+            }
+            return nil
+        })
+    }
+    
     @IBAction func loginBtnPressed(_ sender: Any) {
         
         if emailTxtField.text == "" && passwordTxtField.text == ""{
             showErrorMessage("Please fill all fields")
         }else if emailTxtField.text == ""{
-            showErrorMessage("Please fill email field")
+            showErrorMessage("Please fill IC Number field")
         }else if passwordTxtField.text == ""{
-            showErrorMessage("Please fill password field")
+            showErrorMessage("Please fill Password field")
         }else{
             
             Hud.show(view)
             Api.login(emailTxtField.text!, passwordTxtField.text!).continueWith(block: { (task) -> Any? in
                 if task.succeed{
-                    
-                    Api.getUserInfo(self.emailTxtField.text!).continueWith(block: { (task2) -> Any? in
-                        Hud.hide()
-                        if task2.succeed{
-                            let viewController = UIApplication.shared.delegate as! AppDelegate
-                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                            let FirstNavigationVC = storyboard.instantiateViewController(withIdentifier: "HomeVC") as! HomeViewController
-                            viewController.window!.rootViewController = FirstNavigationVC
-                        }else{
-                            task2.showError()
-                        }
-                        return nil
-                    })
-                    
+                    self.getUserInfo()
                 }else{
                     Hud.hide()
                     task.showError()

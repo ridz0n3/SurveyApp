@@ -11,23 +11,53 @@ import UIKit
 class ProfileViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
 
     let user = User.current
-    let titleSection = ["Personal Info.", "Role Info.", "Parlimen Info."]
-    let placeholder = [
-        ["Name", "Phone Number", "Email"],
-        ["Role"],
-        ["Parliment", "PDM", "State"]
-    ]
+    var titleSection = [String]()
+    var placeholder = [[String]]()
     var textLbl = [[String]]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationBarSetup("first", title: "Profile")
         
-        textLbl = [
-            [user.name, user.phoneno, user.email],
-            [user.rolename],
-            ["user.parlimen", "user.pdm", "user.state"]
-        ]
+        
+        if user.rolename == "PDMLeader"{
+            
+            let parlimen = user.parlimen[0]
+            
+            titleSection = ["Personal Info.", "Role Info."]//, "Parlimen Info."]
+            
+            placeholder = [
+                ["Name", "Phone Number", "Email"],
+                ["Role", "PDM"]
+            ]
+            textLbl = [
+                [user.name, user.phoneno, user.email],
+                [user.rolename, parlimen.pdm]
+            ]
+        }else{
+            
+            titleSection = ["Personal Info.", "Role Info.", "Parlimen Info."]
+            
+            placeholder = [
+                ["Name", "Phone Number", "Email"],
+                ["Role"]//,
+                //["Parliment", "PDM", "State"]
+            ]
+            
+            let parlimen = user.parlimen
+            var parName = [String]()
+            
+            for data in parlimen{
+                parName.append(data.parlimen)
+            }
+            
+            textLbl = [
+                [user.name, user.phoneno, user.email],
+                [user.rolename],
+                parName
+            ]
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -45,7 +75,7 @@ class ProfileViewController: BaseViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return placeholder[section].count
+        return textLbl[section].count
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -53,6 +83,10 @@ class ProfileViewController: BaseViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if indexPath.section == 2{
+            return 30
+        }
         return 50
     }
     
@@ -64,10 +98,19 @@ class ProfileViewController: BaseViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CustomProfileTableViewCell
-        cell.infoTxtField.text = textLbl[indexPath.section][indexPath.row]
-        cell.infoTxtField.titleLabel.text = placeholder[indexPath.section][indexPath.row].capitalized
-        return cell
+        
+        if indexPath.section == 2{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2", for: indexPath)
+            cell.textLabel?.text = textLbl[indexPath.section][indexPath.row].capitalized
+            cell.textLabel?.textColor = UIColor.darkGray
+            return cell
+        }else{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CustomProfileTableViewCell
+            cell.infoTxtField.text = textLbl[indexPath.section][indexPath.row].capitalized
+            cell.infoTxtField.titleLabel.text = placeholder[indexPath.section][indexPath.row].capitalized
+            return cell
+        }
+
     }
     
     @IBAction func logoutBtnPressed(_ sender: Any) {

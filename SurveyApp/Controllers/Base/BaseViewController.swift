@@ -20,6 +20,7 @@ class BaseViewController: UIViewController {
     
     var status = String()
     var surveyIndex = Int()
+    var survey = Survey()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,6 +87,7 @@ class BaseViewController: UIViewController {
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let survey01VC = storyboard.instantiateViewController(withIdentifier: "Survey01VC") as! Survey01ViewController
                     survey01VC.status = status
+                    survey01VC.survey = survey
                     survey01VC.surveyIndex = surveyIndex
                     self.navigationController?.heroNavigationAnimationType = .fade
                     self.navigationController?.pushViewController(survey01VC, animated: true)
@@ -93,6 +95,7 @@ class BaseViewController: UIViewController {
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let survey02VC = storyboard.instantiateViewController(withIdentifier: "Survey02VC") as! Survey02ViewController
                     survey02VC.status = status
+                    survey02VC.survey = survey
                     survey02VC.surveyIndex = surveyIndex
                     self.navigationController?.heroNavigationAnimationType = .fade
                     self.navigationController?.pushViewController(survey02VC, animated: true)
@@ -100,6 +103,7 @@ class BaseViewController: UIViewController {
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let survey03VC = storyboard.instantiateViewController(withIdentifier: "Survey03VC") as! Survey03ViewController
                     survey03VC.status = status
+                    survey03VC.survey = survey
                     survey03VC.surveyIndex = surveyIndex
                     self.navigationController?.heroNavigationAnimationType = .fade
                     self.navigationController?.pushViewController(survey03VC, animated: true)
@@ -107,6 +111,7 @@ class BaseViewController: UIViewController {
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let survey04VC = storyboard.instantiateViewController(withIdentifier: "Survey04VC") as! Survey04ViewController
                     survey04VC.status = status
+                    survey04VC.survey = survey
                     survey04VC.surveyIndex = surveyIndex
                     self.navigationController?.heroNavigationAnimationType = .fade
                     self.navigationController?.pushViewController(survey04VC, animated: true)
@@ -114,6 +119,7 @@ class BaseViewController: UIViewController {
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let survey05VC = storyboard.instantiateViewController(withIdentifier: "Survey05VC") as! Survey05ViewController
                     survey05VC.status = status
+                    survey05VC.survey = survey
                     survey05VC.surveyIndex = surveyIndex
                     self.navigationController?.heroNavigationAnimationType = .fade
                     self.navigationController?.pushViewController(survey05VC, animated: true)
@@ -121,6 +127,7 @@ class BaseViewController: UIViewController {
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
                     let survey06VC = storyboard.instantiateViewController(withIdentifier: "Survey06VC") as! Survey06ViewController
                     survey06VC.status = status
+                    survey06VC.survey = survey
                     survey06VC.surveyIndex = surveyIndex
                     self.navigationController?.heroNavigationAnimationType = .fade
                     self.navigationController?.pushViewController(survey06VC, animated: true)
